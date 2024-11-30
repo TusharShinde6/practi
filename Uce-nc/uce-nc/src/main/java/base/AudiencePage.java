@@ -19,7 +19,7 @@ public class AudiencePage extends BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    // Check if the Audience page is 
+    // Check if the Audience page 
     public boolean isAudiencePage() {
         return audiencePageText.isDisplayed();
     }
