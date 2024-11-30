@@ -19,7 +19,7 @@ public class AudiencePage extends BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    // Check if the Audience page is loaded
+    // Check if the Audience page is 
     public boolean isAudiencePage() {
         return audiencePageText.isDisplayed();
     }
