@@ -13,7 +13,7 @@ public class AudiencePage extends BasePage {
     @FindBy(xpath = "//a[@data-sit='audience']")  // Assuming this is the link to navigate to Audience page
     private WebElement audienceLink;
 
-    // Constructor to initialize the WebElements using PageFactory
+    // Constructor to initialize the WebElements using
     public AudiencePage(WebDriver driver) {    
         this.driver = driver;
         PageFactory.initElements(driver, this);
