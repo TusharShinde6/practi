@@ -11,19 +11,20 @@ RUN apt-get update && apt-get install -y \
     libgconf-2-4 \
     && apt-get clean
 
-# Install Chrome (Specify a specific version for stability)
-ARG CHROME_VERSION=119.0.6446.79  # Replace with desired Chrome version
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update && apt-get install -y google-chrome-$CHROME_VERSION
+# Install Google Chrome
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && sudo dpkg -i google-chrome-stable_current_amd64.deb \
+    && sudo apt-get install -f -y \
+    && rm google-chrome-stable_current_amd64.deb
 
 # Install ChromeDriver (Specify a specific version for stability)
-ARG CHROME_DRIVER_VERSION=119.0.6446.79  # Replace with desired ChromeDriver version
-RUN wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
+RUN wget -q https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_linux64.zip \
     && unzip chromedriver_linux64.zip \
     && mv chromedriver /usr/bin/chromedriver \
     && chmod +x /usr/bin/chromedriver \
     && rm chromedriver_linux64.zip
 	
+RUN google-chrome-stable --version
+RUN chromedriver --version
 # Create shared memory folder with appropriate permissions to avoid memory issues
 RUN mkdir -p /dev/shm && chmod 1777 /dev/shm
