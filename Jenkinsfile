@@ -21,6 +21,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
+                echo 'Cloning repository...'
                 // Checkout the code from the Git repository with credentials
                 checkout([$class: 'GitSCM', 
                           branches: [[name: '*/master']], 
@@ -29,31 +30,32 @@ pipeline {
             }
         }
 
-        stage('Setup') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Setting up environment...'
-
-                // Ensure Maven is installed and configured
+                echo 'Building Docker image...'
                 script {
-                    def mvnHome = tool name: 'Maven', type: 'maven'
-                    env.MAVEN_HOME = "${mvnHome}"
+                    // Build the Docker image using the Dockerfile
+                    docker.build('selenium-test')
                 }
             }
         }
 
-        stage('Build') {
+        stage('Run Tests in Docker') {
             steps {
-                echo 'Compiling the code...'
-                // Compile the code using Maven
-                sh '${MAVEN_HOME}/bin/mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running TestNG tests...'
-                // Run TestNG tests using Maven
-                sh '${MAVEN_HOME}/bin/mvn test'
+                echo 'Running tests inside Docker container...'
+                script {
+                    // Run the Docker container and execute Maven commands
+                    sh '''
+                    docker run --rm \
+                        -v "$PWD:/workspace" \   # Mount the current workspace
+                        -w /workspace \          # Set working directory in the container
+                        selenium-test \
+                        /bin/bash -c "
+                            mvn clean compile &&
+                            mvn test
+                        "
+                    '''
+                }
             }
         }
 
