@@ -25,7 +25,7 @@ pipeline {
                 checkout([$class: 'GitSCM', 
                           branches: [[name: '*/master']], 
                           userRemoteConfigs: [[url: 'https://github.com/TusharShinde6/practi.git',
-                                               credentialsId: '7fb5bd04-f896-4585-b12e-0be0adc5e39b']]])
+                                               credentialsId: 'b7a92506-b84b-436e-a7b0-ec2a9f76a7ec']]])
             }
         }
 
