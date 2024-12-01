@@ -24,3 +24,6 @@ RUN wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/c
     && mv chromedriver /usr/bin/chromedriver \
     && chmod +x /usr/bin/chromedriver \
     && rm chromedriver_linux64.zip
+	
+# Create shared memory folder with appropriate permissions to avoid memory issues
+RUN mkdir -p /dev/shm && chmod 1777 /dev/shm
