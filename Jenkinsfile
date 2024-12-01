@@ -2,10 +2,30 @@ pipeline {
     agent any
 
     stages {
+        stage('Install Git') {
+            steps {
+                echo 'Checking if Git is installed...'
+                // Check if Git is installed, if not, install it
+                sh '''
+                    if ! command -v git &> /dev/null
+                    then
+                        echo "Git not found, installing..."
+                        sudo apt-get update -y
+                        sudo apt-get install -y git
+                    else
+                        echo "Git is already installed"
+                    fi
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
-                // Checkout the code from the Git repository
-                checkout scm
+                // Checkout the code from the Git repository with credentials
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/master']], 
+                          userRemoteConfigs: [[url: 'https://github.com/TusharShinde6/practi.git',
+                                               credentialsId: '7fb5bd04-f896-4585-b12e-0be0adc5e39b']]])
             }
         }
 
@@ -24,7 +44,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compiling the code...'
-                // Compile the code
+                // Compile the code using Maven
                 sh '${MAVEN_HOME}/bin/mvn clean compile'
             }
         }
@@ -32,7 +52,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running TestNG tests...'
-                // Run TestNG tests
+                // Run TestNG tests using Maven
                 sh '${MAVEN_HOME}/bin/mvn test'
             }
         }
@@ -45,7 +65,7 @@ pipeline {
                              alwaysLinkToLastBuild: true,
                              keepAll: true,
                              reportDir: 'target/surefire-reports',
-                             reportFiles: 'index.html',
+                             reportFiles: '**/*.html',
                              reportName: 'TestNG Results'])
             }
         }
