@@ -21,8 +21,11 @@ public class BasePage {
         options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
-        options.addArguments("--start-maximized");
-        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-software-rasterizer");
+        options.addArguments("--remote-debugging-port=9222");
+        options.setBinary("/usr/bin/google-chrome"); 
+        //options.addArguments("--start-maximized");
+        //options.addArguments("--remote-allow-origins=*");
 
         // Initialize WebDriver
         driver = new ChromeDriver(options);
